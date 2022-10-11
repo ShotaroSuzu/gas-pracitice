@@ -31,3 +31,6 @@ dist/
 
 # GAS clasp
 .clasp.json
+
+# memo
+memo/

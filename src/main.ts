@@ -1,7 +1,8 @@
-export const main = async () => {
-  console.log(getGreeting('World'));
-};
+import { loadMessages } from './slack/loadMessages';
+import { channelId } from './env';
 
-export const getGreeting = (name: string) => {
-  return `Hello ${name}!!`;
+export const main = async () => {
+  const messages = loadMessages(channelId());
+
+  console.log(messages);
 };
