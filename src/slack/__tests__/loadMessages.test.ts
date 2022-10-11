@@ -1,11 +1,12 @@
 import { mocked } from 'jest-mock';
 import { loadMessages } from '../loadMessages';
-import { readHistory } from '../slackDao';
+import { readHistory, getUser } from '../slackDao';
 
 jest.mock('../slackDao');
 
 describe('loadMessages', () => {
   const mockedReadHistory = mocked(readHistory);
+  const mockedGetUser = mocked(getUser);
   it('should return converted messages', () => {
     mockedReadHistory.mockReturnValueOnce([
       {
@@ -59,6 +60,11 @@ describe('loadMessages', () => {
         ],
       },
     ]);
+    mockedGetUser.mockReturnValueOnce({
+      profile: {
+        email: 'author-email',
+      },
+    });
     expect(loadMessages('channel-id')).toEqual([
       {
         ts: 'ts',
@@ -67,6 +73,7 @@ describe('loadMessages', () => {
         name: 'author-name',
         text: 'attachment-text',
         fileUrl: 'url-private',
+        email: 'author-email',
       },
       {
         ts: 'ts',

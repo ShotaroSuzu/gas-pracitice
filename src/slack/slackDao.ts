@@ -1,12 +1,15 @@
 import {
   ConversationsHistoryArguments,
   ConversationsHistoryResponse,
+  UsersInfoArguments,
+  UsersInfoResponse,
 } from '@slack/web-api';
 import { callSlackApi } from '../api';
 
 export const readHistory = (channelId: string) => {
+  const apiMethod = 'conversations.history';
   const response = callSlackApi({
-    apiMethod: 'conversations.history',
+    apiMethod,
     payload: {
       channel: channelId,
     } as ConversationsHistoryArguments,
@@ -15,8 +18,25 @@ export const readHistory = (channelId: string) => {
     response.getContentText(),
   ) as ConversationsHistoryResponse;
   if (!ok) {
-    throw new Error(`Fail to read message from channel. Message: ${error}`);
+    throw new Error(`Slack Api : ${apiMethod} fail. Message: ${error}`);
   }
 
   return messages;
+};
+
+export const getUser = (userId: string) => {
+  const apiMethod = 'users.info';
+  const response = callSlackApi({
+    apiMethod,
+    payload: {
+      user: userId,
+    } as UsersInfoArguments,
+  });
+  const { ok, user, error } = JSON.parse(
+    response.getContentText(),
+  ) as UsersInfoResponse;
+  if (!ok) {
+    throw new Error(`Slack Api : ${apiMethod} fail. Message: ${error}`);
+  }
+  return user;
 };

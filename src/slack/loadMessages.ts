@@ -1,4 +1,4 @@
-import { readHistory } from './slackDao';
+import { getUser, readHistory } from './slackDao';
 
 export const loadMessages = (channelId: string) => {
   const messages = readHistory(channelId);
@@ -11,13 +11,16 @@ export const loadMessages = (channelId: string) => {
     })
     .map(({ ts, attachments }) => {
       const attachment = attachments[0];
-      const url = attachment.from_url || '';
-      const author = attachment.author_id;
-      const name = attachment.author_name;
-      const text = attachment.text || '';
-      // const mail = attachment.author_id //TODOメール検索APIを呼び出す
-      const fileUrl = attachment.files && attachment.files[0]?.url_private;
-      return { ts, url, author, name, text, fileUrl };
+      const user = attachment.author_id && getUser(attachment.author_id);
+      return {
+        ts,
+        url: attachment.from_url || '',
+        author: attachment.author_id,
+        name: attachment.author_name,
+        text: attachment.text || '',
+        email: user?.profile?.email,
+        fileUrl: attachment.files && attachment.files[0]?.url_private,
+      };
     });
   return targets;
 };

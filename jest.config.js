@@ -19,4 +19,5 @@ export default {
   globals: {
     UrlFetchApp: { fetch: () => {} },
   },
+  resetMocks: true,
 };
